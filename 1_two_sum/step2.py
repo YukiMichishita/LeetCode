@@ -1,6 +1,11 @@
 from typing import List
 
 
+# numsの中からtargetと等しい値を探し、複数ある場合は最も大きいindexを返す
+def last_index(nums: List[int], target: int) -> int:
+    return len(nums) - list(reversed(nums)).index(target) - 1
+
+
 class Solution:
 
     def twoSum(self, nums: List[int], target: int) -> List[int]:
@@ -13,7 +18,7 @@ class Solution:
             right = sorted_nums[right_cursor]
             if left + right == target:
                 # nums = [3,3] target = 6のようなケースに備えて、大きい方のindexは逆順のリストから取る
-                return [nums.index(left), len(nums) - list(reversed(nums)).index(right) - 1]
+                return [nums.index(left), last_index(nums, right)]
             elif left + right < target:
                 left_cursor += 1
             else:
