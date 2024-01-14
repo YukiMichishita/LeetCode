@@ -7,10 +7,8 @@ class Solution:
 
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         for i, n in enumerate(nums):
-            self.l[n] = i
-
-        for i, n in enumerate(nums):
-            if (target - n) in self.l.keys() and i != self.l[target - n]:
+            if (target - n) in self.l.keys():
                 return [i, self.l[target - n]]
+            self.l[n] = i
 
         return []
