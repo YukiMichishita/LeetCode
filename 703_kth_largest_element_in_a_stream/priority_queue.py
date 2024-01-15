@@ -4,6 +4,36 @@ import typing
 class PriorityQueue:
     T = typing.TypeVar("T")
 
+    def __parent_index(self, index: int) -> int:
+        if index < 0:
+            return 0
+        return (index - 1) // 2
+
+    def __left_child_index(self, index: int) -> int:
+        return 2 * index + 1
+
+    def __right_child_index(self, index: int) -> int:
+        return 2 * (index + 1)
+
+    def has_child(self, index: int) -> bool:
+        return self.__left_child_index(index) < len(self.data)
+
+    def larger_child_index(self, index: int) -> typing.Optional[int]:
+        if not self.has_child(index):
+            return None
+
+        left_index = self.__left_child_index(index)
+        right_index = self.__right_child_index(index)
+        if right_index >= len(self.data) or self.compare_func(self.data[right_index], self.data[left_index]):
+            return left_index
+
+        return right_index
+
+    def swap(self, parent_index: int, child_index: int):
+        tmp = self.data[parent_index]
+        self.data[parent_index] = self.data[child_index]
+        self.data[child_index] = tmp
+
     def __init__(self, init_data: typing.Iterable[T], compare_func: typing.Callable[[T, T], bool]):
         self.compare_func = compare_func
         # 2分木を配列として保持する。rootが0,rootの左子ノードが1,rootの右子ノードが2...のように格納する
@@ -13,25 +43,20 @@ class PriorityQueue:
 
     def push(self, elem: T):
         self.data.append(elem)
-        parent_index = lambda n: (n - 1) // 2
         # 最初の比較対象として末端ノードの親を取得
         new_elem_index = len(self.data) - 1
-        target_index = parent_index(len(self.data) - 1)
-        if target_index < 0:
-            target_index = 0
+        parent_index = self.__parent_index(len(self.data) - 1)
 
         # compare_funcのもとで自分より大きい親が現れるまで、親ノードと入れ替える
-        while self.compare_func(self.data[target_index], elem):
-            self.data[new_elem_index] = self.data[target_index]
-            self.data[target_index] = elem
-            new_elem_index = target_index
-            target_index = parent_index(target_index)
-            if target_index < 0:
+        while self.compare_func(self.data[parent_index], elem):
+            self.swap(parent_index, new_elem_index)
+            new_elem_index = parent_index
+            parent_index = self.__parent_index(parent_index)
+            if parent_index < 0:
                 break
 
     def pop(self):
         out = self.data[0]
-
         # 末端ノードをrootに移動させる
         self.data[0] = self.data[-1]
         self.data = self.data[:-1]
@@ -39,27 +64,12 @@ class PriorityQueue:
         # compare_funcのもとで自分より大きい子ノードがいる限りrootを子ノードと入れ替える
         # 左右どちらの子も自分より大きい場合は、より大きい方と入れ替える
         moving_node_index = 0
-        left_child_index = 1
-        right_child_index = 2
-        while (self.compare_func(self.data[moving_node_index], self.data[left_child_index])
-               or self.compare_func(self.data[moving_node_index], self.data[right_child_index])):
-            tmp = self.data[moving_node_index]
-            if self.compare_func(self.data[left_child_index], self.data[right_child_index]):
-                self.data[moving_node_index] = self.data[right_child_index]
-                self.data[right_child_index] = tmp
-                moving_node_index = right_child_index
-            else:
-                self.data[moving_node_index] = self.data[left_child_index]
-                self.data[left_child_index] = tmp
-                moving_node_index = left_child_index
-
-            left_child_index = 2 * left_child_index + 1
-            if left_child_index >= len(self.data):
-                break
-            right_child_index = 2 * (right_child_index + 1)
-            # 左子ノードはあるが右子ノードはいない場合の配列外アクセスを防ぐ
-            if right_child_index >= len(self.data):
-                right_child_index = left_child_index
+        max_child_index = self.larger_child_index(moving_node_index)
+        while self.has_child(moving_node_index) and self.compare_func(self.data[moving_node_index],
+                                                                      self.data[max_child_index]):
+            self.swap(moving_node_index, max_child_index)
+            moving_node_index = max_child_index
+            max_child_index = self.larger_child_index(moving_node_index)
 
         return out
 
