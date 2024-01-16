@@ -5,8 +5,6 @@ class PriorityQueue:
     T = typing.TypeVar("T")
 
     def __parent_index(self, index: int) -> int:
-        if index < 0:
-            return 0
         return (index - 1) // 2
 
     def __left_child_index(self, index: int) -> int:
@@ -29,11 +27,6 @@ class PriorityQueue:
 
         return right_index
 
-    def swap(self, parent_index: int, child_index: int):
-        tmp = self.data[parent_index]
-        self.data[parent_index] = self.data[child_index]
-        self.data[child_index] = tmp
-
     def __init__(self, init_data: typing.Iterable[T], compare_func: typing.Callable[[T, T], bool]):
         self.compare_func = compare_func
         # 2分木を配列として保持する。rootが0,rootの左子ノードが1,rootの右子ノードが2...のように格納する
@@ -42,20 +35,21 @@ class PriorityQueue:
             self.push(i)
 
     def push(self, elem: T):
+        new_elem_index = len(self.data)
         self.data.append(elem)
-        # 最初の比較対象として末端ノードの親を取得
-        new_elem_index = len(self.data) - 1
-        parent_index = self.__parent_index(len(self.data) - 1)
 
         # compare_funcのもとで自分より大きい親が現れるまで、親ノードと入れ替える
-        while self.compare_func(self.data[parent_index], elem):
-            self.swap(parent_index, new_elem_index)
-            new_elem_index = parent_index
-            parent_index = self.__parent_index(parent_index)
-            if parent_index < 0:
+        while new_elem_index > 0:
+            parent_index = self.__parent_index(new_elem_index)
+            if self.compare_func(elem, self.data[parent_index]):
                 break
 
+            self.data[parent_index], self.data[new_elem_index] = self.data[new_elem_index], self.data[parent_index]
+            new_elem_index = parent_index
+
     def pop(self):
+        if len(self.data) <= 0:
+            return None
         out = self.data[0]
         # 末端ノードをrootに移動させる
         self.data[0] = self.data[-1]
@@ -64,24 +58,34 @@ class PriorityQueue:
         # compare_funcのもとで自分より大きい子ノードがいる限りrootを子ノードと入れ替える
         # 左右どちらの子も自分より大きい場合は、より大きい方と入れ替える
         moving_node_index = 0
-        max_child_index = self.larger_child_index(moving_node_index)
-        while self.has_child(moving_node_index) and self.compare_func(self.data[moving_node_index],
-                                                                      self.data[max_child_index]):
-            self.swap(moving_node_index, max_child_index)
-            moving_node_index = max_child_index
-            max_child_index = self.larger_child_index(moving_node_index)
+        while self.has_child(moving_node_index):
+            larger_child_index = self.larger_child_index(moving_node_index)
+            if self.compare_func(self.data[larger_child_index], self.data[moving_node_index]):
+                break
+
+            self.data[moving_node_index], self.data[larger_child_index] = self.data[larger_child_index], self.data[
+                moving_node_index]
+            moving_node_index = larger_child_index
 
         return out
 
 
 def main():
-    int_pq = PriorityQueue([20, 3, 6, 9, 15, 7, 5, 10, 2, 4, 12, 11], lambda x, y: x < y)
-    int_pq.push(13)
-    print(int_pq.pop())
-    int_pq.push(14)
-    print(int_pq.pop())
-    print(int_pq.pop())
-    print(int_pq.pop())
+    desc_pq = PriorityQueue([20, 3, 6, 9, 15, 7, 5, 10, 2, 4, 12, 11], lambda x, y: x < y)
+    desc_pq.push(13)
+    print(desc_pq.pop())
+    desc_pq.push(14)
+    print(desc_pq.pop())
+    print(desc_pq.pop())
+    print(desc_pq.pop())
+
+    asc_pq = PriorityQueue([], lambda x, y: x > y)
+    print(asc_pq.pop())
+    asc_pq.push(1)
+    asc_pq.push(4)
+    asc_pq.push(5)
+    print(asc_pq.pop())
+    print(asc_pq.pop())
 
     char_pq = PriorityQueue(["a", "x", "f", "c", "l", "y", "s", "m", "u"], lambda x, y: x > y)
     char_pq.push("b")

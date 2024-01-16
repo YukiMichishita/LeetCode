@@ -17,11 +17,11 @@ class Solution:
                 i2 += 1
                 continue
 
-            tmp_cursor = sorted_nums1[i1]
-            intersection.append(tmp_cursor)
-            while i1 < len(nums1) and tmp_cursor == sorted_nums1[i1]:
+            common_elem_index = sorted_nums1[i1]
+            intersection.append(common_elem_index)
+            while i1 < len(nums1) and common_elem_index == sorted_nums1[i1]:
                 i1 += 1
-            while i2 < len(nums2) and tmp_cursor == sorted_nums2[i2]:
+            while i2 < len(nums2) and common_elem_index == sorted_nums2[i2]:
                 i2 += 1
 
         return intersection
