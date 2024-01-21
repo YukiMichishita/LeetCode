@@ -53,7 +53,7 @@ class PriorityQueue:
         out = self.data[0]
         # 末端ノードをrootに移動させる
         self.data[0] = self.data[-1]
-        self.data = self.data[:-1]
+        self.data.pop()
 
         # compare_funcのもとで自分より大きい子ノードがいる限りrootを子ノードと入れ替える
         # 左右どちらの子も自分より大きい場合は、より大きい方と入れ替える
