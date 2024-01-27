@@ -10,14 +10,11 @@ class ListNode:
 class Solution:
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
         current = head
-        first_node_of_same_val = head
+        seeking_next = head
         while current:
-            if first_node_of_same_val.val == current.val:
-                current = current.next
-                continue
-            first_node_of_same_val.next = current
-            first_node_of_same_val = current
+            while seeking_next and seeking_next.val == current.val:
+                seeking_next = seeking_next.next
+            current.next = seeking_next
+            current = seeking_next
 
-        if first_node_of_same_val:
-            first_node_of_same_val.next = None
         return head
