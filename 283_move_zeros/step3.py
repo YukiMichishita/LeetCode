@@ -3,11 +3,12 @@ from typing import List
 
 class Solution:
     def moveZeroes(self, nums: List[int]) -> None:
-        first_zero = 0
+        # zeroを後ろに送る = non-zeroを前に詰める と考える
         i = 0
-        while i < len(nums) and first_zero < len(nums):
-            if nums[first_zero] != 0:
-                first_zero += 1
-            if nums[i] != 0 and first_zero < i:
-                nums[i], nums[first_zero] = nums[first_zero], nums[i]
+        destination = 0
+        while i < len(nums):
+            while destination < len(nums) and nums[destination] != 0:
+                destination += 1
+            if nums[i] != 0 and destination < i:
+                nums[i], nums[destination] = nums[destination], nums[i]
             i += 1
