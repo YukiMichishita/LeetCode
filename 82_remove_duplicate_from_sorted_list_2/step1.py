@@ -1,4 +1,3 @@
-import math
 from typing import Optional
 
 
@@ -19,7 +18,7 @@ class Solution:
         unique_linked_list = ListNode()
         unique_list_head = unique_linked_list
         current = head
-        previous_val = math.nan
+        previous_val = None
         while current:
             if current.val != previous_val and current.val != get_val_safely(current.next):
                 unique_linked_list.next = ListNode(current.val)
