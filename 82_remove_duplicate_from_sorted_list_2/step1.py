@@ -8,7 +8,7 @@ class ListNode:
         self.next = next
 
 
-def safe_val(node: Optional[ListNode]):
+def get_val_safely(node: Optional[ListNode]):
     if not node:
         return None
     return node.val
@@ -21,7 +21,7 @@ class Solution:
         current = head
         previous_val = math.nan
         while current:
-            if current.val != previous_val and current.val != safe_val(current.next):
+            if current.val != previous_val and current.val != get_val_safely(current.next):
                 unique_linked_list.next = ListNode(current.val)
                 unique_linked_list = unique_linked_list.next
             previous_val = current.val
