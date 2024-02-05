@@ -9,17 +9,20 @@ class ListNode:
 
 class Solution:
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        sentinel = ListNode()
-        unique_linked_list = sentinel
+        dummy = ListNode()
+        last_unique_node = dummy
         current = head
+        val_to_remove = None
+
         while current:
-            if current.next and current.val == current.next.val:
-                while current.next and current.val == current.next.val:
-                    current = current.next
+            if current.val == val_to_remove:
                 current = current.next
                 continue
-            unique_linked_list.next = ListNode(current.val)
-            unique_linked_list = unique_linked_list.next
+            if current.next and current.val == current.next.val:
+                val_to_remove = current.val
+                continue
+            last_unique_node.next = ListNode(current.val)
+            last_unique_node = last_unique_node.next
             current = current.next
 
-        return sentinel.next
+        return dummy.next
