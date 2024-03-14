@@ -13,13 +13,13 @@ def quick_sort(target: List):
         prev_left = left
         prev_right = right
 
-        pivot = median3(target[left], target[left + (right - left) // 2], target[right])
+        pivot = median3(target[left], target[left + (right - left + 1) // 2], target[right])
         while True:
             while target[left] < pivot:
                 left += 1
             while target[right] > pivot:
                 right -= 1
-            if left > right:
+            if left >= right:
                 quick_sort_impl(target, prev_left, left - 1)
                 quick_sort_impl(target, left, prev_right)
                 return
