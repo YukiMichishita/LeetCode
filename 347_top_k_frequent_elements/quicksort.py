@@ -7,25 +7,25 @@ def median3(x, y, z):
 
 
 def quick_sort(target: List):
-    def quick_sort_impl(target: List, left: int, right: int):
-        if left == right:
-            return
-        prev_left = left
-        prev_right = right
-
-        pivot = median3(target[left], target[left + (right - left + 1) // 2], target[right])
+    def partition(target: List, left: int, right: int, pivot: int):
         while True:
             while target[left] < pivot:
                 left += 1
             while target[right] > pivot:
                 right -= 1
             if left >= right:
-                quick_sort_impl(target, prev_left, left - 1)
-                quick_sort_impl(target, left, prev_right)
-                return
+                return left - 1
             target[left], target[right] = target[right], target[left]
             left += 1
             right -= 1
+
+    def quick_sort_impl(target: List, left: int, right: int):
+        if left == right:
+            return
+        pivot = median3(target[left], target[right], target[left + (right - left + 1) // 2])
+        p = partition(target, left, right, pivot)
+        quick_sort_impl(target, left, p)
+        quick_sort_impl(target, p + 1, right)
 
     quick_sort_impl(target, 0, len(target) - 1)
 
