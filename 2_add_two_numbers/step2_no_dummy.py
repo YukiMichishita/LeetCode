@@ -12,21 +12,20 @@ def get_value_safely(node: Optional[ListNode]) -> int:
         return 0
     return node.val
 
-
-def one_digit_add(val1: int, val2: int, carry: int) -> (int, int):
+# 戻り値は(和, 繰り上がり)
+def add_one_digit(val1: int, val2: int, carry: int) -> (int, int):
     digit = val1 + val2 + carry
-    carry = int(digit >= 10)
-    return (digit % 10, carry)
+    return (digit % 10, digit // 10)
 
 class Solution:
     def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
-        digit, carry = one_digit_add(get_value_safely(l1), get_value_safely(l2), 0)
+        digit, carry = add_one_digit(get_value_safely(l1), get_value_safely(l2), 0)
         l1 = l1.next
         l2 = l2.next
         root = ListNode(digit)
         sum_head = root
         while l1 or l2:
-            digit, carry = one_digit_add(get_value_safely(l1), get_value_safely(l2), carry)
+            digit, carry = add_one_digit(get_value_safely(l1), get_value_safely(l2), carry)
             sum_head.next = ListNode(digit)
             sum_head = sum_head.next
             if l1:
