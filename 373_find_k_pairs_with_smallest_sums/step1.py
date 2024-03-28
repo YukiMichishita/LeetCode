@@ -22,3 +22,4 @@ class Solution:
         return k_smallest_pairs
 
 
+
