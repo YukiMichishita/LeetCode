@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from collections import defaultdict
+from statistics import median
 
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
@@ -10,9 +11,6 @@ class Solution:
         counts = list(num_to_count.items())
 
         def quick_select_top_k(target: List[Tuple[int, int]], top_k: int) -> List[Tuple[int,int]]:
-            def median3(x, y, z):
-                return max(min(x, y), min(max(x, y), z))
-
             def partition(target: List[Tuple[int, int]], left: int, right: int, pivot: int):
                 while True:
                     while target[left][1] > pivot:
@@ -28,7 +26,7 @@ class Solution:
             def quick_sort_desc_top_k(target: List[Tuple[int, int]], left: int, right: int, top_k: int):
                 if left == right:
                     return
-                pivot = median3(target[left][1], target[right][1], target[left + (right - left + 1) // 2][1])
+                pivot = median([target[left][1], target[right][1], target[left + (right - left + 1) // 2][1]])
                 p = partition(target, left, right, pivot)
                 quick_sort_desc_top_k(target, left, p, top_k)
                 if p < top_k:

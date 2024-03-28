@@ -1,10 +1,6 @@
 import random
 from typing import List
-
-
-def median3(x, y, z):
-    return max(min(x, y), min(max(x, y), z))
-
+from statistics import median
 
 def quick_sort(target: List):
     def partition(target: List, left: int, right: int, pivot: int):
@@ -22,7 +18,7 @@ def quick_sort(target: List):
     def quick_sort_impl(target: List, left: int, right: int):
         if left == right:
             return
-        pivot = median3(target[left], target[right], target[left + (right - left + 1) // 2])
+        pivot = median([target[left], target[right], target[left + (right - left + 1) // 2]])
         p = partition(target, left, right, pivot)
         quick_sort_impl(target, left, p)
         quick_sort_impl(target, p + 1, right)
