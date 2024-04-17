@@ -35,6 +35,32 @@ class Solution:
 
         return len(increasing_subsequences)
 
+# 1-2.探索範囲が[left, right]で、終了時にleft = rightになるバージョン
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        def binary_search_insert_position(nums, target):
+            if len(nums) <= 0 or nums[-1] < target:
+                return len(nums)
+            left = 0
+            right = len(nums) - 1
+            while left < right:
+                middle = (left + right) // 2
+                if nums[middle] < target:
+                    left = middle + 1
+                else:
+                    right = middle
+            return left
+
+        increasing_subsequences = []
+        for num in nums:
+            if not increasing_subsequences or num > increasing_subsequences[-1]:
+                increasing_subsequences.append(num)
+            else:
+                i = binary_search_insert_position(increasing_subsequences, num)
+                increasing_subsequences[i] = num
+
+        return len(increasing_subsequences)
+
 
 # 2. 1の二分探索に対して、途中で挿入箇所を見つけたらループを抜ける処理を追加。targetと同じ値がnumsの中にあるケースで少し速いはず。
 class Solution:
