@@ -39,7 +39,7 @@ class Solution:
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
         def binary_search_insert_position(nums, target):
-            if len(nums) <= 0 or nums[-1] < target:
+            if not nums or nums[-1] < target:
                 return len(nums)
             left = 0
             right = len(nums) - 1
