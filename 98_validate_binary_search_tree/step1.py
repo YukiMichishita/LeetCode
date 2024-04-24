@@ -10,12 +10,12 @@ class TreeNode:
 
 class Solution:
     def isValidBST(self, root: Optional[TreeNode]) -> bool:
-        def is_valid(node, lower_bound, upper_bound) -> bool:
+        def check_nodes_recursively(node, lower_bound, upper_bound) -> bool:
             if not node:
                 return True
             if not lower_bound < node.val < upper_bound:
                 return False
-            if not is_valid(node.left, lower_bound, node.val):
+            if not check_nodes_recursively(node.left, lower_bound, node.val):
                 return False
-            return is_valid(node.right, node.val, upper_bound)
-        return is_valid(root, -inf, inf)
+            return check_nodes_recursively(node.right, node.val, upper_bound)
+        return check_nodes_recursively(root, -inf, inf)
