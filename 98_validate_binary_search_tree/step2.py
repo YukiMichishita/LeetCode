@@ -36,3 +36,48 @@ class Solution:
             nodes_to_check.append((node.left, lower_bound, node.val))
             nodes_to_check.append((node.right, node.val, upper_bound))
         return True
+
+# inorder traversal(stack)
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def append_left_nodes(node, nodes):
+            while node:
+                nodes.append(node)
+                node = node.left
+
+        nodes_to_check = []
+        append_left_nodes(root, nodes_to_check)
+        lower_bound = -inf
+        while nodes_to_check:
+            current = nodes_to_check.pop()
+            if current.val <= lower_bound:
+                return False
+            lower_bound = current.val
+            if current.right:
+                if current.right.val <= current.val:
+                    return False
+                append_left_nodes(current.right, nodes_to_check)
+        return True
+
+# inorder traversal(再帰) 最初に全てのノードをinorderでソートしたリストを作ってからそれを探索する。
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def inorder_sort(node, nodes):
+            if not node:
+                return
+            if node.left:
+                inorder_sort(node.left, nodes)
+            nodes.append(node)
+            if node.right:
+                inorder_sort(node.right, nodes)
+
+        inordered_nodes = []
+        inorder_sort(root, inordered_nodes)
+        prev_value = -inf
+        for node in inordered_nodes:
+            if node.val <= prev_value:
+                return False
+            prev_value = node.val
+        return True
+
+        
