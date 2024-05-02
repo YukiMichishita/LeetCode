@@ -80,4 +80,21 @@ class Solution:
             prev_value = node.val
         return True
 
-        
+# ソートにyieldを使う
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def inorder_sort(node):
+            if not node:
+                return
+            if node.left:
+                yield from inorder_sort(node.left)
+            yield node
+            if node.right:
+                yield from inorder_sort(node.right)
+
+        prev_value = -inf
+        for node in inorder_sort(root):
+            if node.val <= prev_value:
+                return False
+            prev_value = node.val
+        return True
