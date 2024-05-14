@@ -8,6 +8,29 @@ class TreeNode:
         self.left = left
         self.right = right
 
+# step1の改善
+class Solution:
+    def zigzagLevelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+        frontier = [root]
+        ordered_nodes = []
+        while frontier:
+            ordered_nodes.append([node.val for node in frontier])
+            new_frontier = []
+            for node in frontier:
+                if node.left:
+                    new_frontier.append(node.left)
+                if node.right:
+                    new_frontier.append(node.right)
+            frontier = new_frontier
+
+        for i in range(len(ordered_nodes)):
+            if i % 2 != 0:
+                ordered_nodes[i].reverse()
+
+        return ordered_nodes
+
 # BFS
 class Solution:
     def zigzagLevelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
@@ -45,24 +68,23 @@ class Solution:
 class Solution:
     def zigzagLevelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
         current_depth_nodes = [root]
-        next_depth_nodes = []
         depth_to_ordered_values = defaultdict(list)
         depth = 0
-        while current_depth_nodes or next_depth_nodes:
-            if not current_depth_nodes:
-                current_depth_nodes = next_depth_nodes
-                next_depth_nodes = []
-                depth += 1
-            node = current_depth_nodes.pop()
-            if not node:
-                continue
-            depth_to_ordered_values[depth].append(node.val)
-            if depth % 2 == 0:
-                next_depth_nodes.append(node.left)
-                next_depth_nodes.append(node.right)
-            else:
-                next_depth_nodes.append(node.right)
-                next_depth_nodes.append(node.left)
+        while current_depth_nodes:
+            next_depth_nodes = []
+            while current_depth_nodes:
+                node = current_depth_nodes.pop()
+                if not node:
+                    continue
+                depth_to_ordered_values[depth].append(node.val)
+                if depth % 2 == 0:
+                    next_depth_nodes.append(node.left)
+                    next_depth_nodes.append(node.right)
+                else:
+                    next_depth_nodes.append(node.right)
+                    next_depth_nodes.append(node.left)
+            current_depth_nodes = next_depth_nodes
+            depth += 1
 
         return list(depth_to_ordered_values.values())
 
