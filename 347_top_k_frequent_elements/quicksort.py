@@ -40,7 +40,7 @@ print(c)
 assert c == sorted(c), "c is not sorted"
 
 for _ in range(100):
-    target = [int(random.random() * 1000) for i in range(1000)]
+    target = [random.randint(0, 1000) for _ in range(1000)]
     original = target.copy()
     quick_sort(target)
     assert target == sorted(original), f"target is not sorted original:{original},target:{target}"

@@ -8,4 +8,4 @@ class Solution:
         for n in nums:
             nums_to_count[n] += 1
         top_k = heapq.nlargest(k, nums_to_count.items(), lambda x: x[1])
-        return [int(num) for num, _ in top_k]
+        return [num for num, _ in top_k]

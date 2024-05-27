@@ -4,12 +4,6 @@ from statistics import median
 
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
-        num_to_count = defaultdict(int)
-        for n in nums:
-            num_to_count[n] += 1
-
-        counts = list(num_to_count.items())
-
         def quick_select_top_k(target: List[Tuple[int, int]], top_k: int) -> List[Tuple[int,int]]:
             def partition(target: List[Tuple[int, int]], left: int, right: int, pivot: int):
                 while True:
@@ -34,6 +28,12 @@ class Solution:
 
             quick_sort_desc_top_k(target, 0, len(target) - 1, top_k)
             return target[:top_k]
+
+        num_to_count = defaultdict(int)
+        for n in nums:
+            num_to_count[n] += 1
+
+        counts = list(num_to_count.items())
 
         top_k = quick_select_top_k(counts, k)
         return [k for (k, v) in top_k]
