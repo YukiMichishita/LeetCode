@@ -1,4 +1,5 @@
 from typing import List, Optional
+from collections import deque
 
 # 任意のiとjについて、i < j ⇒ preorder[i]はpreorder[j]と同じ階層かより上の階層にある
 # 任意のiとjについて、i < j ⇒ inorder[i]はinorder[j]よりも左側にある
@@ -16,11 +17,11 @@ class Solution:
         if not preorder:
             return None
         root_value = preorder[0]
-        num_of_left_nodes = inorder.index(root_value)
-        preorder_left = preorder[1:1 + num_of_left_nodes]
-        preorder_right = preorder[1 + num_of_left_nodes:]
-        inorder_left = inorder[:num_of_left_nodes]
-        inorder_right = inorder[num_of_left_nodes + 1:]
+        num_left_children = inorder.index(root_value)
+        preorder_left = preorder[1:1 + num_left_children]
+        preorder_right = preorder[1 + num_left_children:]
+        inorder_left = inorder[:num_left_children]
+        inorder_right = inorder[num_left_children + 1:]
         root = TreeNode(root_value)
         root.left = self.buildTree(preorder_left, inorder_left)
         root.right = self.buildTree(preorder_right, inorder_right)
@@ -65,13 +66,42 @@ class Solution:
             nonlocal preorder_root_index
             if left >= right:
                 return None
-            root_value = preorder[preorder_root_index]
+            node_value = preorder[preorder_root_index]
             preorder_root_index += 1
-            num_of_left_nodes = value_to_inorder_index[root_value]
-            root = TreeNode(root_value)
-            root.left = build_tree_implementation(left, num_of_left_nodes)
-            root.right = build_tree_implementation(num_of_left_nodes + 1, right)
-            return root
+            num_left_children = value_to_inorder_index[node_value]
+            node = TreeNode(node_value)
+            node.left = build_tree_implementation(left, num_left_children)
+            node.right = build_tree_implementation(num_left_children + 1, right)
+            return node
 
         preorder_root_index = 0
         return build_tree_implementation(0, len(preorder))
+        
+# O(N) 再帰を使わずにqueueを使った実装
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        value_to_preorder_index = {}
+        for index, value in enumerate(preorder):
+            value_to_preorder_index[value] = index
+        value_to_inorder_index = {}
+        for index, value in enumerate(inorder):
+            value_to_inorder_index[value] = index
+
+        root_value = preorder[0]
+        root = TreeNode(root_value)
+        nodes_to_check = deque([(root, 0, len(inorder) - 1)])
+        while nodes_to_check:
+            node, inorder_start, inorder_end = nodes_to_check.popleft()
+            preorder_index = value_to_preorder_index[node.val]
+            inorder_index = value_to_inorder_index[node.val]
+            num_left_children = inorder_index - inorder_start
+            num_right_children = inorder_end - inorder_index
+            if num_left_children:
+                left_child = TreeNode(preorder[preorder_index + 1])
+                node.left = left_child
+                nodes_to_check.append((left_child, inorder_start, inorder_index - 1))
+            if num_right_children:
+                right_child = TreeNode(preorder[preorder_index + num_left_children + 1])
+                node.right = right_child
+                nodes_to_check.append((right_child, inorder_index + 1, inorder_end))
+        return root
