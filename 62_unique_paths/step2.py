@@ -7,8 +7,8 @@ class Solution:
         if m == 1 or n == 1:
             return 1
         num_right_moving = m - 1
-        num_bottom_moving = n - 1
-        return comb(num_right_moving + num_bottom_moving, num_bottom_moving)
+        num_down_moving = n - 1
+        return comb(num_right_moving + num_down_moving, num_down_moving)
 
 
 # 問題カテゴリがDPなので想定解はこれかと思われる
@@ -16,9 +16,9 @@ class Solution:
     def uniquePaths(self, m: int, n: int) -> int:
         num_unique_paths_table = [[1] * n for _ in range(m)]
         for row in range(1, m):
-            for column in range(1, n):
-                num_unique_paths_table[row][column] = num_unique_paths_table[row][column - 1] \
-                                                      + num_unique_paths_table[row - 1][column]
+            for col in range(1, n):
+                num_unique_paths_table[row][col] = num_unique_paths_table[row][col - 1] \
+                                                      + num_unique_paths_table[row - 1][col]
         return num_unique_paths_table[m - 1][n - 1]
 
 
@@ -26,7 +26,7 @@ class Solution:
 class Solution:
     def uniquePaths(self, m: int, n: int) -> int:
         num_unique_paths = [1] * m
-        for column in range(1, n):
+        for col in range(1, n):
             for row in range(1, m):
                 num_unique_paths[row] += num_unique_paths[row - 1]
         return num_unique_paths[m - 1]
@@ -42,5 +42,5 @@ class Solution:
                 return 1
             return combination(n - 1, k) + combination(n - 1, k - 1)
         num_right_moving = m - 1
-        num_bottom_moving = n - 1
-        return combination(num_right_moving + num_bottom_moving, min(num_right_moving, num_bottom_moving))
+        num_down_moving = n - 1
+        return combination(num_right_moving + num_down_moving, min(num_right_moving, num_down_moving))
