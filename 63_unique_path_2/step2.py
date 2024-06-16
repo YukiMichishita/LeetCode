@@ -1,0 +1,19 @@
+from typing import List
+
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        OBSTABLE = 1
+        height = len(obstacleGrid)
+        width = len(obstacleGrid[0])
+        unique_paths_table = [[0] * width for _ in range(height)]
+        unique_paths_table[0][0] = OBSTABLE
+        for row in range(height):
+            for col in range(width):
+                if obstacleGrid[row][col] == OBSTABLE:
+                    unique_paths_table[row][col] = 0
+                    continue
+                if row > 0:
+                    unique_paths_table[row][col] += unique_paths_table[row - 1][col]
+                if col > 0:
+                    unique_paths_table[row][col] += unique_paths_table[row][col - 1]
+        return unique_paths_table[height - 1][width - 1]
